@@ -63,7 +63,8 @@ H.Ready(function(){
 	var RenderFrame = function()
 	{
 		C.globalAlpha = 0.75;
-		R.Clear('#71C9F5');
+		R.Clear('#001133');
+	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
 		H.Physics.GravitySolver.Update(C);

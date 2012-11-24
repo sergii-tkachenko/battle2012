@@ -6,7 +6,7 @@ H.Physics = {
 		Init: function(opts)
 		{
 			this.O = $.extend({}, {
-				numParticles: 2000,
+				numParticles: 700,
 				distThresh: 100,
 				gen: {
 					weightBounds: [0.5, 4]
@@ -23,8 +23,8 @@ H.Physics = {
 			{
 				var w = Math.Random(1, 1.5);
 				
-				if(Math.RandomInt(0, 100) > 95)
-					w = Math.Random(3, 6);
+				if(Math.RandomInt(0, 100) > 90)
+					w = Math.Random(5, 7);
 
 				var x = Math.RandomInt(0, this.O.width);
 				var y = Math.RandomInt(0, this.O.height);
@@ -32,7 +32,7 @@ H.Physics = {
 				this.particles.push({
 					x: x,
 					y: y,
-					r: 2 * w,
+					r: 1 * w,
 					w: w,
 					vx: 0,
 					vy: 0
@@ -46,6 +46,11 @@ H.Physics = {
 			{
 				var p1 = this.particles[pI1];
 
+				if (p1.x+p1.r > this.O.width) p1.x = p1.r;
+				if (p1.y+p1.r > this.O.height) p1.y = p1.r;
+				if (p1.x-p1.r < 0) p1.x = this.O.width - p1.r;
+				if (p1.y-p1.r < 0) p1.y = this.O.height - p1.r;
+
 				for(var pI2 = parseInt(pI1) + 1; pI2 < this.particles.length; pI2++)
 				{
 					var p2 = this.particles[pI2];
@@ -54,52 +59,30 @@ H.Physics = {
 					var dy = p1.y - p2.y;
 					var dist = Math.sqrt(dx*dx + dy*dy);
 
-					
-
 					if(dist <= this.O.distThresh)
 					{
 						
-						var ax = dx / 165 / 3 / this.particles.length;
-					var ay = dy / 165 / 3 / this.particles.length;
+						var ax = dx / 165 / 3 / this.particles.length / 10;
+						var ay = dy / 165 / 3 / this.particles.length / 10;
 
-					p1.vx += ax * p2.w;
-					p1.vy += ay * p2.w;
+						p1.vx += ax * p2.w;
+						p1.vy += ay * p2.w;
 
-					p2.vx += ax * p1.w;
-					p2.vy += ay * p1.w;
+						p2.vx += ax * p1.w;
+						p2.vy += ay * p1.w;
 
-					if (p1.x+p1.r >= this.O.width) p1.x = p1.r;
-					if (p1.y+p1.r >= this.O.height) p1.y = p1.r;
-					if (p1.x-p1.r <= 0) p1.x = this.O.width - p1.r;
-					if (p1.y-p1.r <= 0) p1.y = this.O.height - p1.r;
-
-					/*
-					if (p2.x+p2.r >= this.O.width) p2.x = p2.r;
-					if (p2.y+p2.r >= this.O.height) p2.y = p2.r;
-					if (p2.x-p2.r <= 0) p2.x = this.O.width - p2.r;
-					if (p2.y-p2.r <= 0) p2.y = this.O.height - p2.r;
-					*/
-
-					p1.x -= p1.vx;
-					p1.y -= p1.vy;
-
-					p2.x += p2.vx;
-					p2.y += p2.vy;
+						p1.x -= p1.vx;
+						p1.y -= p1.vy;
 
 						if (p1.w >= 3 && p2.w >= 3)
 						{
 							C.beginPath();
-							C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-dist/this.O.distThresh) +")";
+							C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
 							C.moveTo(p1.x, p1.y);
 							C.lineTo(p2.x, p2.y);
 							C.stroke();
 							C.closePath();
 						}
-
-						/*
-						console.log(p1.vx);
-						console.log(p1.vy);
-						*/
 					}
 				}
 			}
@@ -109,7 +92,7 @@ H.Physics = {
 		{
 			var fs = C.fillStyle;
 
-			C.fillStyle = '#000000';
+			C.fillStyle = '#ffffff';
 
 			for(var pI in this.particles)
 			{
