@@ -92,11 +92,11 @@ H.Physics = {
 		{
 			var fs = C.fillStyle;
 
-			C.fillStyle = '#ffffff';
-
 			for(var pI in this.particles)
 			{
 				var pt = this.particles[pI];
+
+				C.fillStyle = 'rgba(255, 255, 255, ' + (pt.w / 7.0) + ')';
 
 				C.beginPath();
 				C.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);

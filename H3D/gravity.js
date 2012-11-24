@@ -1,4 +1,4 @@
-var w = 800;
+var w = 1200;
 var h = 600;
 
 H.Init('hadouken', {
@@ -13,65 +13,32 @@ H.Ready(function(){
 
 	this.R.Clear('#71C9F5');
 
-	var points = [];
-	for (var i=0; i<2000; i++)
-	{
-		var pt = new Math.float2(Math.RandomInt(0, 640), Math.RandomInt(0, 480));
-
-		pt.speed = Math.Random(1, 5);
-		pt.r1 = 1;
-		pt.fill = "black";
-
-		if (pt.speed >= 3)
-		{
-			pt.fill = "white";
-		}
-
-		points.push(pt);
-
-		if (pt.speed > 3)
-		{
-			var p1 = new Math.float2(pt.x, pt.y);
-			p1.r1 = 4;
-			p1.speed = pt.speed;
-			p1.fill = "rgba(255, 255, 255, 0.2)";
-			points.push(p1);
-		}
-	}
-
-	var RenderPoint = function(pt, r1, fill)
-	{
-		var fs = C.fillStyle;
-		C.fillStyle = fill;
-
-		var alpha = 0.2;
-
-		C.beginPath();
-		C.arc(pt.x, pt.y, r1, 0, Math.PI * 2);
-		C.fill();
-		C.fillStyle = fs;
-	}
-
-//	var camera = new H.Camera();
-	
-	var pivot = new Math.float2(300, 300);
-//	var pt = new Math.float2(150 + pivot.x, 0 + pivot.y);
-
 	H.Physics.GravitySolver.Init({width:w, height:h});
 	H.Physics.GravitySolver.Generate();
 
+	var frameCounter = 0;
+
 	var RenderFrame = function()
 	{
-		C.globalAlpha = 0.75;
+		C.globalAlpha = 0.5;
 		R.Clear('#001133');
 	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
 		H.Physics.GravitySolver.Update(C);
 		H.Physics.GravitySolver.Render(C);
+
+		frameCounter++;
 		
 		setTimeout(RenderFrame, 30);
 	}
+
+	var FPSPrecision = 500;
+	var $FPSLabel = document.getElementById('FPSLabel');
+
+	setInterval(function(){
+		$FPSLabel.innerHTML = (frameCounter * 1000 / FPSPrecision) + 'px';
+	}, FPSPrecision);
 
 	R.Clear('#774040');
 

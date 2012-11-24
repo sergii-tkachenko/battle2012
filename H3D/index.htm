@@ -9,6 +9,14 @@
 	<script type="text/javascript" src="Hadouken.Math.js"></script>
 	<script type="text/javascript" src="Hadouken.Physics.js"></script>
 	<script type="text/javascript" src="gravity.js"></script>
+
+	<script src="http://io.dou2.xxx:5051/socket.io/socket.io.js"></script>
+	<script>
+	  var socket = io.connect('http://io.dou2.xxx:5051');
+	  socket.on('tweet', function (data) {
+	    console.log(data);
+	  });
+	</script>
 </head>
 <body>
 	<div id="hadouken"></div>

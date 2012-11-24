@@ -23,6 +23,12 @@ H.Math.Degree2Radian = function(x)
 	return x * (Math.PI / 180);
 }
 
+
+H.Math.Lerp = function(from, to, t)
+{
+	return from + (to - from) * t;
+}
+
 H.Math.Random = function(min, max)
 {
 	return Math.random() * (max - min) + min;
