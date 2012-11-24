@@ -2,10 +2,10 @@ var Hadouken3D = {
 	
 	Init: function(containerID, opts)
 	{
-		this.O = $.extend({}, opts, {
+		this.O = $.extend({}, {
 			width: 640,
 			height: 480
-		});
+		}, opts);
 
 		var self = this;
 
