@@ -27,16 +27,28 @@ H.Ready(function(){
 		frameDate = new Date().getTime();
 		C.globalAlpha = 0.5;
 		//	Frame clearing code
-
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
 		gradient.addColorStop(0, "#080c24");
 		gradient.addColorStop(1, "#d00206");
-		R.Clear(gradient);
+	//	R.Clear(gradient);
+		R.Clear("white");
 	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
 		H.Physics.GravitySolver.Update(C);
 		H.Physics.GravitySolver.Render(C);
+
+		C.globalCompositeOperation = 'darker'
+	//	C.globalAlpha = 0.5;
+
+		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
+		gradient.addColorStop(0, "#080c24");
+		gradient.addColorStop(1, "#d00206");
+	//	R.Clear(gradient);
+
+	//	C.globalAlpha = 1;
+
+		C.globalCompositeOperation = "source-over";		
 
 		frameTime = new Date().getTime() - frameDate;
 		

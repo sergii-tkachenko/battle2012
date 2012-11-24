@@ -7,7 +7,7 @@ H.Physics = {
 		{
 			this.O = $.extend({}, {
 				numParticles: 500,
-				distThresh: 100,
+				distThresh: 50,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
@@ -27,9 +27,9 @@ H.Physics = {
 
 			for (var c = 0; c < this.O.numParticles; c++)
 			{
-				var w = Math.Random(1, 1.5);
+				var w = Math.Random(4, 8);
 				
-				if(Math.RandomInt(0, 100) > 0)
+				if(Math.RandomInt(0, 100) > 70)
 					w = Math.Random(15, 17);
 
 				x += step;
@@ -44,7 +44,7 @@ H.Physics = {
 				this.particles.push({
 					x: x,
 					y: y,
-					r: 1 * 1,
+					r: 0.3 * w,
 					w: w,
 					vx: 0,
 					vy: 0
@@ -137,7 +137,7 @@ H.Physics = {
 						if (p1.w >= 3 && p2.w >= 3)
 						{
 							C.beginPath();
-							C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
+							C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-dist/this.O.distThresh) +")";
 							C.moveTo(p1.x, p1.y);
 							C.lineTo(p2.x, p2.y);
 							C.stroke();
@@ -155,7 +155,7 @@ H.Physics = {
 			for(var pI in this.particles)
 			{
 
-				C.fillStyle = 'rgba(255, 255, 255, ' + 1 + ')';
+				C.fillStyle = 'rgba(0, 0, 0, ' + 1 + ')';
 				C.beginPath();
 
 				var pt = this.particles[pI];
