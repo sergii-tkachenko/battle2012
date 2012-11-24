@@ -6,8 +6,50 @@ H.Init('hadouken', {
 	height: h
 });
 
+window.onkeydown = function(event)
+{
+	var angleX = 0,
+		angleY = 0,
+		transX = 0,
+		transZ = 0;
+	switch (event.keyCode)
+	{
+		case 37:
+			if (event.ctrlKey)
+				transX = -5;
+			else
+				angleY = 5;
+			break;
+		case 38:
+			if (event.ctrlKey)
+				transZ = 5;
+			else
+				angleX = 5;
+			break;
+		case 39:
+			if (event.ctrlKey)
+				transX = 5;
+			else
+				angleY = -5;
+			break;
+		case 40:
+			if (event.ctrlKey)
+				transZ = -5;
+			else
+				angleX = -5;
+			break;
+	}
+	if (angleX != 0)
+		H.Physics.GravitySolver.O.transformMatrix = new Math.float4x4.RotateX(Math.Degree2Radian(angleX)).mul(H.Physics.GravitySolver.O.transformMatrix);
+	if (angleY != 0)
+		H.Physics.GravitySolver.O.transformMatrix = new Math.float4x4.RotateY(Math.Degree2Radian(angleY)).mul(H.Physics.GravitySolver.O.transformMatrix);
+	if (transZ != 0 || transX != 0)
+		H.Physics.GravitySolver.O.transformMatrix = new Math.float4x4.Translate(new Math.float3(transX, 0, transZ)).mul(H.Physics.GravitySolver.O.transformMatrix);
+
+}
+
 H.Ready(function(){
-	
+
 	var R = this.R;
 	var C = this.R.ctx;
 
@@ -53,7 +95,7 @@ H.Ready(function(){
 	}
 
 //	var camera = new H.Camera();
-	
+
 	var pivot = new Math.float2(300, 300);
 //	var pt = new Math.float2(150 + pivot.x, 0 + pivot.y);
 
@@ -68,7 +110,7 @@ H.Ready(function(){
 
 		H.Physics.GravitySolver.Update(C);
 		H.Physics.GravitySolver.Render(C);
-		
+
 		setTimeout(RenderFrame, 30);
 	}
 

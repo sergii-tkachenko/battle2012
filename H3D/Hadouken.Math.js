@@ -15,7 +15,7 @@ H.Math.Perspective = function(fov, aspect, zn, zf)
 
 H.Math.Radian2Degree = function(x)
 {
-	return x * (Math.PI / 180);
+	return x / (Math.PI * 180);
 }
 
 H.Math.Degree2Radian = function(x)
@@ -64,6 +64,11 @@ H.float2.prototype.add = function(v2)
 		this.x + v2.x,
 		this.y + v2.y
 	);
+}
+H.float2.prototype.dist = function(v2)
+{
+	var sub = this.sub(v2);
+	return Math.sqrt(sub.x * sub.x + sub.y * sub.y)
 }
 
 H.float3 = function(x, y, z){
@@ -122,6 +127,11 @@ H.float3.prototype.norm = function()
 {
 	return new H.float3();
 }
+H.float3.prototype.dist = function(v2)
+{
+	var sub = this.sub(v2);
+	return Math.sqrt(sub.x * sub.x + sub.y * sub.y + sub.z * sub.z)
+}
 
 H.float4x4 = function(m)
 {
@@ -177,6 +187,16 @@ H.float4x4.Projection = function(pt3d)
 		[0, 1, 0, 0],
 		[0, 0, 1, 0],
 		[f(pt3d.x), f(pt3d.z), f(pt3d.z), 1]
+	]);
+}
+
+H.float4x4.Translate = function(offsetP)
+{
+	return new H.float4x4([
+		[1, 0, 0, offsetP.x],
+		[0, 1, 0, offsetP.y],
+		[0, 0, 1, offsetP.z],
+		[0, 0, 0, 1],
 	]);
 }
 
