@@ -4,7 +4,7 @@ H.Init('hadouken', {
 });
 
 H.Ready(function(){
-	
+
 	var R = this.R;
 	var C = this.R.ctx;
 
@@ -50,7 +50,7 @@ H.Ready(function(){
 	}
 
 //	var camera = new H.Camera();
-	
+
 	var pivot = new Math.float2(300, 300);
 //	var pt = new Math.float2(150 + pivot.x, 0 + pivot.y);
 
