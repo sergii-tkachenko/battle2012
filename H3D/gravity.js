@@ -1,4 +1,4 @@
-var w = 1200;
+var w = 800;
 var h = 600;
 
 H.Init('hadouken', {
@@ -17,27 +17,38 @@ H.Ready(function(){
 	H.Physics.GravitySolver.Generate();
 
 	var frameCounter = 0;
+	var frameTime = 0;
+	var frameDate = null;
+
+	console.log(this);
 
 	var RenderFrame = function()
-	{
+	{	
+		frameDate = new Date().getTime();
 		C.globalAlpha = 0.5;
-		R.Clear('#001133');
+		//	Frame clearing code
+
+		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
+		gradient.addColorStop(0, "#080c24");
+		gradient.addColorStop(1, "#d00206");
+		R.Clear(gradient);
 	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
 		H.Physics.GravitySolver.Update(C);
 		H.Physics.GravitySolver.Render(C);
 
-		frameCounter++;
+		frameTime = new Date().getTime() - frameDate;
 		
-		setTimeout(RenderFrame, 30);
+		setTimeout(RenderFrame, 1);
 	}
 
-	var FPSPrecision = 500;
+	var FPSPrecision = 100;
 	var $FPSLabel = document.getElementById('FPSLabel');
 
 	setInterval(function(){
-		$FPSLabel.innerHTML = (frameCounter * 1000 / FPSPrecision) + 'px';
+		$FPSLabel.innerHTML = (FPSPrecision / frameTime).toFixed(3) + ' fps';
+		frameCounter = 0;
 	}, FPSPrecision);
 
 	R.Clear('#774040');

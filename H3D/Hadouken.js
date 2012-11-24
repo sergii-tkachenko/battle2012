@@ -18,6 +18,10 @@ var Hadouken3D = {
 
 			canvas.appendTo(container);
 
+			canvas.click(function(e){
+				H.Physics.GravitySolver.AddPoint(e.offsetX, e.offsetY);
+			});
+
 			self.Render.ctx = canvas[0].getContext('2d');
 
 			self.selfReady = true;
