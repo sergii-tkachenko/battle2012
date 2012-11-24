@@ -45,6 +45,11 @@ H.float2.prototype.cross = function(v2)
 	);
 }
 
+H.float2.prototype.dist = function(v2)
+{
+	return Math.sqrt(this.dot(v2));
+}
+
 H.float2.prototype.sub = function(v2)
 {
 	return new H.float2(
