@@ -1,5 +1,5 @@
 var Hadouken3D = {
-	
+
 	Init: function(containerID, opts)
 	{
 		this.O = $.extend({}, {
@@ -19,7 +19,7 @@ var Hadouken3D = {
 			canvas.appendTo(container);
 
 			canvas.click(function(e){
-				H.Physics.GravitySolver.AddPoint(e.offsetX, e.offsetY);
+				H.Physics.GravitySolver.AddPoint(e.offsetX, e.offsetY, 0);
 			});
 
 			self.Render.ctx = canvas[0].getContext('2d');

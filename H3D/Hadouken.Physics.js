@@ -23,15 +23,57 @@ H.Physics = {
 		{
 			for (var c = 0; c < this.O.numParticles; c++)
 			{
-				var w = Math.Random(4, 6);
+				var w = Math.Random(2, 4);
 				
+<<<<<<< HEAD
 				if(Math.RandomInt(0, 100) > 97)
 					w = Math.Random(13, 16);
+=======
+				if(Math.RandomInt(0, 100) > 90)
+					w = Math.Random(10, 14);
+>>>>>>> 1cbeb3395ef9e13fc117d0cfa2bdbe333a0f5c12
 
 				var x = Math.RandomInt(0, this.O.width);
 				var y = Math.RandomInt(0, this.O.height);
 
+<<<<<<< HEAD
 				var sign = Math.RandomInt(0, 100) > 500 ? 1 : -1
+=======
+				this.particles.push({
+					x: x,
+					y: y,
+					r: 0.4 * w,
+					w: w,
+					vx: 0,
+					vy: 0
+				});
+			}
+		},
+
+		/*
+		Generate: function()
+		{
+			var x = 0;
+			var y = 0;
+
+			var step = 20;
+
+			for (var c = 0; c < this.O.numParticles; c++)
+			{
+				var w = Math.Random(4, 8);
+				
+				if(Math.RandomInt(0, 100) > 70)
+					w = Math.Random(15, 17);
+
+				x += step;
+				if (x > this.O.width)
+				{
+					y += step;
+					if (y > this.O.height) y = 0;
+
+					x = 0;
+				}
+>>>>>>> 1cbeb3395ef9e13fc117d0cfa2bdbe333a0f5c12
 
 				this.particles.push({
 					x: x,
@@ -195,6 +237,7 @@ H.Physics = {
 						C.lineWidth = 1;
 						C.moveTo(p1.x, p1.y);
 						C.lineTo(p2.x, p2.y);
+            C.lineWidth = 2;
 						C.stroke();
 						C.closePath();
 					}
