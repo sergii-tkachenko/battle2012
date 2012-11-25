@@ -3,10 +3,8 @@ app = express.createServer();
 port = process.env.PORT || 3000;
 
 require 'fs'
-app.get '/', (req, res) ->
-  fs.readFile "#{__dirname}/../public/index.html", "utf8", (err, text) ->
-    res.send text
-
+app.use '/', express.static("#{__dirname}/../public")
+app.use '/H3D', express.static("#{__dirname}/../H3D")
 
 fs = require('fs')
 io = require('socket.io').listen(app)
