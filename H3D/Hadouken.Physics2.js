@@ -8,8 +8,8 @@ H.Physics = {
 		Init: function(opts)
 		{
 			this.O = $.extend({}, {
-				numParticles: 500,
-				distThresh: 50,
+				numParticles: 1000,
+				distThresh: 80,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
@@ -40,31 +40,34 @@ H.Physics = {
 			{
 				w = Math.Random(4, 8);
 
-				if (Math.RandomInt(0, 100) > 70)
+				if (Math.RandomInt(0, 100) > 80)
 					w = Math.Random(15, 17);
 
-				x += step;
+				// x += step;
 
-				if (x > this.O.width)
-				{
-					y += step;
-					z += step;
-					if (z > this.O.deep)
-						z = 10;
-					if (y > this.O.height)
-					{
-						y = 10;
-					}
+				// if (x > this.O.width)
+				// {
+				// 	y += step;
+				// 	z += step;
+				// 	if (z > this.O.deep)
+				// 		z = 10;
+				// 	if (y > this.O.height)
+				// 	{
+				// 		y = 10;
+				// 	}
 
-					x = 10;
-				}
+				// 	x = 10;
+				// }
 
+        var x = Math.Random(95, 100);
+        var y = Math.Random(95, 100);
+        var z = Math.Random(95, 100);
 				var p = new Math.float3(x, y, z);
 				p.r = 0.3 * w;
-				p.w = w;
-				p.vx = 0;
-				p.vy = 0;
-				p.vz = 0;
+				p.w = Math.Random(1, 10);
+				p.vx = Math.Random(1, 8) * w/2.5;
+				p.vy = Math.Random(1, 8) * w/2.5;
+				p.vz = Math.Random(1, 8) * w/2.5;
 				this.particles.push(p);
 			}
 		},
@@ -135,7 +138,7 @@ H.Physics = {
 
 						var diff = p1.sub(p2);
 
-						var F = 1 / dist / 10;
+						var F = 1 / dist / 100;
 
 						var a1 = -(p2.w / p1.w) * F;
 						p1.vx += a1 * diff.x;
@@ -298,13 +301,13 @@ H.Physics = {
 					p2 = connectPoints[this._connected[connect].p2];
 				if (p1 == null || p2 == null)
 					continue;
-				C.beginPath();
-				C.fillStyle = 'rgba(0, 0, 0, ' + 1 + ')';
-				C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-this._connected[connect].dist/this.O.distThresh) +")";
-				C.moveTo(p1.x, p1.y);
-				C.lineTo(p2.x, p2.y);
-				C.stroke();
-				C.closePath();
+				// C.beginPath();
+				// C.fillStyle = 'rgba(0, 0, 0, ' + 1 + ')';
+				// C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-this._connected[connect].dist/this.O.distThresh) +")";
+				// C.moveTo(p1.x, p1.y);
+				// C.lineTo(p2.x, p2.y);
+				// C.stroke();
+				// C.closePath();
 	//			var speed = 'vx: ' + pt.vx + ', vy: ' + pt.vy;
 			//	C.fillText(speed, pt.x+10, pt.y+10);
 

@@ -1,5 +1,5 @@
-var w = 600;
-var h = 600;
+var w = 1440;
+var h = 700;
 
 H.Init('hadouken', {
 	width: w,
