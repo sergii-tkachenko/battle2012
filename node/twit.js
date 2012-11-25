@@ -15,7 +15,12 @@ app.use('/H3D', express["static"]("" + __dirname + "/../H3D"));
 
 fs = require('fs');
 
-io = require('socket.io').listen(5150);
+io = require('socket.io').listen(app);
+
+io.configure(function() {
+  io.set("transports", ["xhr-polling"]);
+  return io.set("polling duration", 10);
+});
 
 io.set('log level', 2);
 
