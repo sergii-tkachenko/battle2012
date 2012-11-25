@@ -35,6 +35,11 @@ H.Ready(function(){
 
 	console.log(this);
 
+	$(document).keydown(function(e){
+		if(e.which == 27)
+			$('#twitPanel').fadeOut();
+	});
+
 	var pause = false;
 
 	$(document).keydown(function(e){
@@ -90,8 +95,8 @@ H.Ready(function(){
 		C.globalAlpha = pause ? 0.1 : 0.5;
 		//	Frame clearing code
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
-		gradient.addColorStop(0, "#080c24");
-		gradient.addColorStop(1, "#d00206");
+		gradient.addColorStop(0, "#0b0d24");
+		gradient.addColorStop(1, "#55226c");
 		R.Clear(gradient);
 	//	R.Clear("white");
 	//	R.Clear('#71C9F5');

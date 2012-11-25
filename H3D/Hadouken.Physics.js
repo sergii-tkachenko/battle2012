@@ -259,8 +259,8 @@ H.Physics = {
 
 				if(p1.vx == 0 || p1.vy == 0 || (new Date().getTime() - p1.time) > 120*1000)
 				{
-					delUS.push(pI1);
-					continue;
+				//	delUS.push(pI1);
+				//	continue;
 				}
 
 				for( ; pI2 < pI2End; pI2++)
