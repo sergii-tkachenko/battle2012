@@ -21,9 +21,9 @@ H.Physics = {
 		{
 			for (var c = 0; c < this.O.numParticles; c++)
 			{
-				var w = Math.Random(4, 6);
+				var w = Math.Random(2, 4);
 				
-				if(Math.RandomInt(0, 100) > 97)
+				if(Math.RandomInt(0, 100) > 90)
 					w = Math.Random(10, 14);
 
 				var x = Math.RandomInt(0, this.O.width);
@@ -32,7 +32,7 @@ H.Physics = {
 				this.particles.push({
 					x: x,
 					y: y,
-					r: 0.6 * w,
+					r: 0.4 * w,
 					w: w,
 					vx: 0,
 					vy: 0
@@ -175,6 +175,7 @@ H.Physics = {
 						C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
 						C.moveTo(p1.x, p1.y);
 						C.lineTo(p2.x, p2.y);
+            C.lineWidth = 2;
 						C.stroke();
 						C.closePath();
 					}
