@@ -127,7 +127,7 @@ H.Physics = {
 					return;
 				
 				if(!(this.particles[pI].w + 2 >= BIGDOT * 4))
-					this.particles[pI].w += 2;
+					this.particles[pI].w += 3;
 
 				this.particles[pI].r = 0.7 * this.particles[pI].w;
 				this.particles[pI].time = new Date().getTime();

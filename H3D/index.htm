@@ -15,7 +15,7 @@
 			position: relative;
 			padding: 0;
 			margin: 0;
-			background-color: #3b0a1d;
+			background-color: #110a2a;
 		}
 
 		#twitPanel
@@ -64,9 +64,9 @@
 		}
 	</style>
 
-	<script src="http://serene-castle-2537.herokuapp.com/socket.io/socket.io.js"></script>
+	<script src="http://localhost:5150/socket.io/socket.io.js"></script>
 	<script>
-	  var socket = io.connect('http://serene-castle-2537.herokuapp.com');
+	  var socket = io.connect('http://localhost:5150');
 	  socket.on('tweet', function (data) {
 	    console.log(data);
 

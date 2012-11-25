@@ -7,10 +7,10 @@ app.use '/', express.static("#{__dirname}/../public")
 app.use '/H3D', express.static("#{__dirname}/../H3D")
 
 fs = require('fs')
-io = require('socket.io').listen(app)
-io.configure ->
-  io.set "transports", ["xhr-polling"]
-  io.set "polling duration", 10
+io = require('socket.io').listen(5150)
+# io.configure ->
+#   io.set "transports", ["xhr-polling"]
+#   io.set "polling duration", 10
 io.set 'log level', 2
 
 app.listen(port);
@@ -26,9 +26,9 @@ T = new Twit {
 # gm = require('gm')
 
 io.sockets.on 'connection', (socket) ->
-  stream = T.stream 'statuses/sample', {
-    # track: ["news"]
-    lang: "en"
+  stream = T.stream 'statuses/filter', {
+    track: ["news"]
+    # lang: "en"
   }
 
   stream.on 'tweet', (tweet, i) ->
