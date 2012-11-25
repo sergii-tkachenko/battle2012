@@ -9,11 +9,7 @@ port = process.env.PORT || 3000;
 
 require('fs');
 
-app.get('/', function(req, res) {
-  return fs.readFile("" + __dirname + "/../public/index.html", "utf8", function(err, text) {
-    return res.send(text);
-  });
-});
+app.use('/', express["static"]("" + __dirname + "/../public"));
 
 fs = require('fs');
 
