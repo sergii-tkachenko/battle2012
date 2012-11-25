@@ -15,12 +15,7 @@ app.use('/H3D', express["static"]("" + __dirname + "/../H3D"));
 
 fs = require('fs');
 
-io = require('socket.io').listen(app);
-
-io.configure(function() {
-  io.set("transports", ["xhr-polling"]);
-  return io.set("polling duration", 10);
-});
+io = require('socket.io').listen(5150);
 
 io.set('log level', 2);
 
@@ -37,8 +32,8 @@ T = new Twit({
 
 io.sockets.on('connection', function(socket) {
   var stream;
-  stream = T.stream('statuses/sample', {
-    lang: "en"
+  stream = T.stream('statuses/filter', {
+    track: ["#news"]
   });
   stream.on('tweet', function(tweet, i) {
     var hashtag, hashtags, _i, _len, _ref;
@@ -67,7 +62,8 @@ io.sockets.on('connection', function(socket) {
       string += "#" + d + " ";
     }
     return T.get('search/tweets', {
-      q: d
+      q: d,
+      lang: 'en'
     }, function(err, reply) {
       if (reply.statuses) {
         return socket.emit('hashtag-tweet', reply.statuses);

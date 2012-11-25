@@ -359,21 +359,23 @@ H.Physics = {
 					C.beginPath();
 					C.arc(xpt.point.x, xpt.point.y, xpt.r, 0, Math.PI * 2);
 					// C.stroke();
-					C.fill();
-					C.fillStyle = fs;
+          C.fillStyle = "rgb(255, 255, 255)";
+          C.fill();
 
-					if(this.particles[xpt.index].r >= BIGDOT)
-					{
-						C.font = 'italic ' + Math.floor(1.5 * this.particles[xpt.index].w) + 'px Arial';
-						C.fillText(this.particles[xpt.index].name, xpt.point.x + xpt.r + 10, xpt.point.y);
-					}
-				}
-			}
-			for (var connect in this._connected)
-			{
-				var p1 = connectPoints[this._connected[connect].p1],
-					p2 = connectPoints[this._connected[connect].p2];
-				if (p1 == null || p2 == null)
+          if(this.particles[xpt.index].r >= BIGDOT)
+          {
+            C.font = 'italic ' + Math.floor(1.3 * this.particles[xpt.index].w) + 'px Arial';
+            C.fillStyle = "rgba(255, 255, 255, 0.4)";
+            C.fillText(this.particles[xpt.index].name, xpt.point.x + xpt.r + 10, xpt.point.y);
+          }
+					C.fillStyle = fs;
+        }
+      }
+      for (var connect in this._connected)
+      {
+        var p1 = connectPoints[this._connected[connect].p1],
+          p2 = connectPoints[this._connected[connect].p2];
+        if (p1 == null || p2 == null)
 					continue;
 
 				var ss = C.strokeStyle;
@@ -397,6 +399,7 @@ H.Physics = {
 				{
 					C.beginPath();
 					C.arc(xpt.point.x, xpt.point.y, xpt.r + 10, 0, Math.PI * 2);
+          C.strokeStyle = "rgba(255, 255, 255, 0.4)";
 					C.stroke();
 					var p1 = this.particles[xpt.index];
 					for (var i = keys.length - 1; i >= 0; i--)

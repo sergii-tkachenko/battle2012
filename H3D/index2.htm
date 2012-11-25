@@ -10,9 +10,63 @@
 	<script type="text/javascript" src="Hadouken.Physics2.js"></script>
 	<script type="text/javascript" src="gravity2.js"></script>
 
-	<script src="http://serene-castle-2537.herokuapp.com/socket.io/socket.io.js"></script>
+  <style type="text/css">
+    html, tbody{
+      position: relative;
+      padding: 0;
+      margin: 0;
+      background-color: #110a2a;
+    }
+
+    #twitPanel
+    {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 300px;
+      background: url(black.png);
+      overflow: hidden;
+      display: none;
+    }
+
+    #twitPanel *
+    {
+      color: white;
+      font-family: 'Arial';
+      font-size: 12px;
+      margin: 5px 5px 15px 5px;
+    }
+
+    div{
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    canvas,
+    #hadouken
+    {
+      position: relative;
+      margin: 10px auto;
+      display: block;
+    }
+
+    canvas
+    {
+      box-shadow: 0 10px 25px rgba(10, 0, 3, 0.5);
+    }
+
+    #hadouken
+    {
+      position: relative;
+      width: 1200px;
+    }
+  </style>
+
+	<script src="http://localhost:5150/socket.io/socket.io.js"></script>
 	<script>
-	  var socket = io.connect('http://serene-castle-2537.herokuapp.com/');
+	  var socket = io.connect('http://localhost:5150/');
 	  socket.on('tweet', function (data) {
 	    console.log(data);
 
@@ -34,7 +88,7 @@
 	</script>
 </head>
 <body>
+  <div id="hadouken"></div>
 	<p id="FPSLabel"></p>
-	<div id="hadouken"></div>
 </body>
 </html>

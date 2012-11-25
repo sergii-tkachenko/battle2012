@@ -27,7 +27,7 @@ T = new Twit {
 
 io.sockets.on 'connection', (socket) ->
   stream = T.stream 'statuses/filter', {
-    track: ["news"]
+    track: ["#news"]
     # lang: "en"
   }
 
@@ -45,7 +45,7 @@ io.sockets.on 'connection', (socket) ->
     for d in data
       string += "##{d} "
 
-    T.get 'search/tweets', { q: d }, (err, reply) ->
+    T.get 'search/tweets', { q: d, lang: 'en' }, (err, reply) ->
       socket.emit 'hashtag-tweet', reply.statuses if reply.statuses
 
 
