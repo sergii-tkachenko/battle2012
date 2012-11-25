@@ -9,9 +9,8 @@ T = new Twit {
   access_token_secret: 'T1PiQ2mddLfcoCGPyhPwJb1o3u5idenCBwBFPOEo'
 }
 
-# im = require('imagemagick');
-fs = require('fs')
-gm = require('gm')
+# fs = require('fs')
+# gm = require('gm')
 
 io.sockets.on 'connection', (socket) ->
   stream = T.stream 'statuses/sample', {
