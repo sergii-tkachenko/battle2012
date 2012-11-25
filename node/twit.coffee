@@ -1,4 +1,4 @@
-io = require('socket.io').listen(5051)
+io = require('socket.io').listen(80)
 io.set 'log level', 2
 
 Twit = require('twit')
