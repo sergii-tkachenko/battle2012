@@ -1,4 +1,4 @@
-var w = 800;
+var w = 1200;
 var h = 600;
 
 H.Init('hadouken', {
@@ -6,8 +6,21 @@ H.Init('hadouken', {
 	height: h
 });
 
+H.TwitPanel = {
+	twits: [],
+	lastY: -10,
+
+	alpha: 0,
+
+	AddTwit: function(tw)
+	{
+		$("<p></p>").html(tw.text).appendTo(this.$node);
+	}
+};
+
 H.Ready(function(){
 	
+	var self = this;
 	var R = this.R;
 	var C = this.R.ctx;
 
@@ -22,10 +35,59 @@ H.Ready(function(){
 
 	console.log(this);
 
+	var pause = false;
+
+	$(document).keydown(function(e){
+		if(e.which == 16)
+			pause = true;
+	});
+
+	$(document).keyup(function(e){
+		if(e.which == 16)
+			pause = false;
+	});
+
+	H.TwitPanel.$node = $('#twitPanel');
+	H.TwitPanel.$node.detach().appendTo('#hadouken');
+
+	GS = H.Physics.GravitySolver;
+	hoverPoints = [];
+
+	var mouseEvent = null;
+
+	$(H.canvas).mousemove(function(e){
+	//	if(pause)
+		{
+			mouseEvent = e;
+		}
+	});
+
+	$(H.canvas).click(function(e){
+
+		if(pause)
+		{
+			var pts = GS.FindPointsUnderCursor(e.offsetX, e.offsetY);
+			var tags = [];
+			for(var pI in pts)
+				tags.push(pI);
+
+			socket.emit('hashtags', tags);
+		}
+	});
+
+	var RenderHoverPoints = function(e)
+	{
+		if(mouseEvent == null) return;
+
+		hoverPoints = GS.FindPointsUnderCursor(e.offsetX, e.offsetY);
+			for(var pI in hoverPoints)
+				GS.RenderHoverPoint(hoverPoints[pI], C);
+	}
+
 	var RenderFrame = function()
 	{	
 		frameDate = new Date().getTime();
-		C.globalAlpha = 0.75;
+		C.globalAlpha = pause ? 0.1 : 0.5;
 		//	Frame clearing code
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
 		gradient.addColorStop(0, "#080c24");
@@ -35,18 +97,16 @@ H.Ready(function(){
 	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
-		H.Physics.GravitySolver.Update(C);
+		if (pause)
+		{
+			H.Physics.GravitySolver.RenderHeavyLinks(C);
+		}
+		else
+			H.Physics.GravitySolver.Update(C);
+
 		H.Physics.GravitySolver.Render(C);
 
-		C.globalCompositeOperation = 'darker'
-	//	C.globalAlpha = 0.5;
-
-		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
-		gradient.addColorStop(0, "#080c24");
-		gradient.addColorStop(1, "#d00206");
-	//	R.Clear(gradient);
-
-	//	C.globalAlpha = 1;
+		RenderHoverPoints(mouseEvent);
 
 		C.globalCompositeOperation = "source-over";		
 
@@ -60,11 +120,11 @@ H.Ready(function(){
 	var $PointCounter = document.getElementById('PointCounter');
 
 	
-	setInterval(function(){
+	/*setInterval(function(){
 		$FPSLabel.innerHTML = (1000 / frameTime * 1000 / FPSPrecision).toFixed(3) + ' fps';
 		$PointCounter.innerHTML = H.Physics.GravitySolver.particles.length + ' points';
 		frameCounter = 0;
-	}, FPSPrecision);
+	}, FPSPrecision);*/
 
 
 	R.Clear('#774040');
