@@ -23,6 +23,12 @@ H.Math.Degree2Radian = function(x)
 	return x * (Math.PI / 180);
 }
 
+
+H.Math.Lerp = function(from, to, t)
+{
+	return from + (to - from) * t;
+}
+
 H.Math.Random = function(min, max)
 {
 	return Math.random() * (max - min) + min;
@@ -100,15 +106,6 @@ H.float3.prototype.sub = function(v2)
 	);
 }
 
-H.float3.prototype.projection = function(deep)
-{
-	var d = (this.z / deep) + 1;
-	return new H.float2(
-		this.x / d,
-		this.y / d
-	);
-}
-
 H.float3.prototype.cross = function(v2)
 {
 	return new H.float3(
@@ -135,7 +132,7 @@ H.float3.prototype.dist = function(v2)
 
 H.float4x4 = function(m)
 {
-	this._ = m ? m : [];
+	this._ = m == null ? [] : m;
 }
 
 H.float4x4.prototype.mul = function(m2)
@@ -169,7 +166,7 @@ H.float4x4.prototype.mulFloat3 = function(pt3d)
 	return new H.float3(RDC(0) / d, RDC(1) / d, RDC(2) / d);
 }
 
-H.float4x4.Identity = function()
+H.float4x4.Identity = function(m2)
 {
 	return new H.float4x4([
 		[1, 0, 0, 0],
