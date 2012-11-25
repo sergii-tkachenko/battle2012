@@ -48,13 +48,15 @@ H.Physics = {
 				if (x > this.O.width)
 				{
 					y += step;
+					z += step;
+					if (z > this.O.deep)
+						z = 10;
 					if (y > this.O.height)
 					{
-						y = 0;
-						z += step;
+						y = 10;
 					}
 
-					x = 0;
+					x = 10;
 				}
 
 				var p = new Math.float3(x, y, z);
@@ -133,7 +135,7 @@ H.Physics = {
 
 						var diff = p1.sub(p2);
 
-						var F = 1 / dist / 200;
+						var F = 1 / dist / 10;
 
 						var a1 = -(p2.w / p1.w) * F;
 						p1.vx += a1 * diff.x;
@@ -207,38 +209,38 @@ H.Physics = {
 			if (this.O.transformMatrix != null)
 				tMatrix = tMatrix.mul(this.O.transformMatrix);
 
-			var gran = [
-				new Math.float3(0, 0, 0),
-				new Math.float3(this.O.width, 0, 0),
-				new Math.float3(this.O.width, this.O.height, 0),
-				new Math.float3(0, this.O.height, 0),
-				new Math.float3(0, 0, 0),
-				new Math.float3(0, 0, this.O.deep),
-				new Math.float3(this.O.width, 0, this.O.deep),
-				new Math.float3(this.O.width, 0, 0),
-				new Math.float3(this.O.width, 0, this.O.deep),
-				new Math.float3(this.O.width, this.O.height, this.O.deep),
-				new Math.float3(0, this.O.height, this.O.deep),
-				new Math.float3(0, 0, this.O.deep),
-				new Math.float3(0, this.O.height, this.O.deep),
-				new Math.float3(this.O.width, this.O.height, this.O.deep),
-				new Math.float3(this.O.width, this.O.height, 0),
-				new Math.float3(0, this.O.height, 0),
-				new Math.float3(0, this.O.height, this.O.deep),
-			];
-			C.strokeStyle = "#000000";
-			var p = gran[0].sub(this.O.center);
-			p = tMatrix.mulFloat3(p);
-			p = p.add(this.O.center);
-			C.moveTo(p.x, p.y);
-			for (var i in gran)
-			{
-				var p = gran[i].sub(this.O.center);
-				p = tMatrix.mulFloat3(p);
-				p = p.add(this.O.center);
-				C.lineTo(p.x, p.y);
-			}
-			C.stroke();
+			// var gran = [
+			// 	new Math.float3(0, 0, 0),
+			// 	new Math.float3(this.O.width, 0, 0),
+			// 	new Math.float3(this.O.width, this.O.height, 0),
+			// 	new Math.float3(0, this.O.height, 0),
+			// 	new Math.float3(0, 0, 0),
+			// 	new Math.float3(0, 0, this.O.deep),
+			// 	new Math.float3(this.O.width, 0, this.O.deep),
+			// 	new Math.float3(this.O.width, 0, 0),
+			// 	new Math.float3(this.O.width, 0, this.O.deep),
+			// 	new Math.float3(this.O.width, this.O.height, this.O.deep),
+			// 	new Math.float3(0, this.O.height, this.O.deep),
+			// 	new Math.float3(0, 0, this.O.deep),
+			// 	new Math.float3(0, this.O.height, this.O.deep),
+			// 	new Math.float3(this.O.width, this.O.height, this.O.deep),
+			// 	new Math.float3(this.O.width, this.O.height, 0),
+			// 	new Math.float3(0, this.O.height, 0),
+			// 	new Math.float3(0, this.O.height, this.O.deep),
+			// ];
+			// C.strokeStyle = "#000000";
+			// var p = gran[0].sub(this.O.center);
+			// p = tMatrix.mulFloat3(p);
+			// p = p.add(this.O.center);
+			// C.moveTo(p.x, p.y);
+			// for (var i in gran)
+			// {
+			// 	var p = gran[i].sub(this.O.center);
+			// 	p = tMatrix.mulFloat3(p);
+			// 	p = p.add(this.O.center);
+			// 	C.lineTo(p.x, p.y);
+			// }
+			// C.stroke();
 
 			for(var pI in this.particles)
 			{
