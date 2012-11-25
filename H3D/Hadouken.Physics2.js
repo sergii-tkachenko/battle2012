@@ -186,9 +186,9 @@ H.Physics = {
 			{
 				var p1 = this.particles[pI1];
 
-				if (p1.x+p1.r > this.O.width || p1.x-p1.r < 0) p1.vx = -p1.vx;
-				if (p1.y+p1.r > this.O.height && p1.y-p1.r < 0) p1.vy = -p1.vy;
-				if (p1.z+p1.r > this.O.deep && p1.z-p1.r < 0) p1.vz = -p1.vz;
+				if (p1.x + p1.r > this.O.width || p1.x - p1.r < 0) p1.vx = -p1.vx;
+				if (p1.y + p1.r > this.O.height || p1.y - p1.r < 0) p1.vy = -p1.vy;
+				if (p1.z + p1.r > this.O.deep || p1.z - p1.r < 0) p1.vz = -p1.vz;
 				// if (p1.x-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
 				// if (p1.y-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy
 				// if (p1.z-p1.r < 0 && p1.vz < 0) p1.vz = -p1.vz
