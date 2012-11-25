@@ -2,7 +2,13 @@ express = require('express')
 app = express.createServer();
 port = process.env.PORT || 3000;
 
+require 'fs'
+app.get '/', (req, res) ->
+  fs.readFile "#{__dirname}/../public/index.html", "utf8", (err, text) ->
+    res.send text
 
+
+fs = require('fs')
 io = require('socket.io').listen(app)
 io.configure ->
   io.set "transports", ["xhr-polling"]
@@ -19,7 +25,6 @@ T = new Twit {
   access_token_secret: 'T1PiQ2mddLfcoCGPyhPwJb1o3u5idenCBwBFPOEo'
 }
 
-# fs = require('fs')
 # gm = require('gm')
 
 io.sockets.on 'connection', (socket) ->
@@ -36,6 +41,14 @@ io.sockets.on 'connection', (socket) ->
       socket.emit 'tweet', hashtags if hashtags.length > 1
 
 
+  socket.on 'hashtags', (data) ->
+    return unless data.length
+    string = ''
+    for d in data
+      string += "##{d} "
+
+    T.get 'search/tweets', { q: d }, (err, reply) ->
+      socket.emit 'hashtag-tweet', reply.statuses if reply.statuses
 
 
         # hashtag = hashtag.text.toLowerCase();
