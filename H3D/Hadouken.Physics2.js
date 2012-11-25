@@ -1,9 +1,21 @@
+var BIGDOT = 6;
+
+
 H.Physics = {
 	GravitySolver: {
+
+		speed: 10,
+		maxParticlesSpeed: 25,
+
+		mouseCoords: new Math.float2(-100, -100),
 
 		particles: [],
 
 		_connected: [],
+
+		pointsIn2DProjection: null,
+
+		specialName: "hadouken",
 
 		Init: function(opts)
 		{
@@ -16,9 +28,9 @@ H.Physics = {
 
 				width: 200,
 				height: 200,
-				deep: 400,
+				deep: 500,
 				visionLimit: 1000,
-				transformMatrix: Math.float4x4.Translate(new Math.float3(0, 0, 400)).mul(Math.float4x4.RotateX(Math.Degree2Radian(-60))),
+				transformMatrix: Math.float4x4.Translate(new Math.float3(0, 0, 200)).mul(Math.float4x4.RotateX(Math.Degree2Radian(-60))),
 
 			}, opts);
 			if (this.O.center == null)
@@ -59,12 +71,14 @@ H.Physics = {
 					x = 10;
 				}
 
-				var p = new Math.float3(x, y, z);
+				var p = new Math.float3(x, y, z);//this.O.center.x, this.O.center.y, this.O.center.z);
 				p.r = 0.3 * w;
 				p.w = w;
-				p.vx = 0;
-				p.vy = 0;
-				p.vz = 0;
+				p.v = new Math.float3(0, 0, 0
+					// Math.RandomInt(0, 1),
+					// Math.RandomInt(0, 1),
+					// Math.RandomInt(0, 0)
+				);
 				this.particles.push(p);
 			}
 		},
@@ -109,14 +123,71 @@ H.Physics = {
 			var p = new Math.float3(x, y, z);
 			p.r = 0.3 * w;
 			p.w = w;
-			p.vx = 0;
-			p.vy = 0;
-			p.vz = 0;
+			p.v = new Math.float3(0, 0, 0);
 			this.particles.push(p);
 		},
 
+		GetSelectedPoint: function(x, y, radius)
+		{
+			if (!radius)
+				radius = 0;
+			for (var pI in this.pointsIn2DProjection)
+			{
+				for (var ppI in this.pointsIn2DProjection[pI])
+				{
+
+					var point = this.pointsIn2DProjection[pI][ppI].point;
+					if (new Math.float2(x, y).dist(point) < radius + this.pointsIn2DProjection[pI][ppI].r)
+					{
+						return this.pointsIn2DProjection[pI][ppI];
+					}
+				}
+			}
+		},
+
+		namedParticles: [],
+
+		AddNamedPoint: function(name, x, y, z, tags)
+		{
+			var id = this.particles.length;
+
+			if (!this.namedParticles[name])
+			{
+				this.namedParticles[name] = id;
+
+				var p = new Math.float3(x, y, z);
+				if (name == this.specialName)
+				{
+					p.w = BIGDOT * 3;
+					p.r = 0.7 * p.w;
+				}
+				else
+				{
+					p.w = 2;
+					p.r = 2;
+				}
+				p.name = name;
+				p.tags = tags;
+				p.v = new Math.float3(Math.Random(-0.5, 0.5), Math.Random(-0.5, 0.5), Math.Random(-0.5, 0.5));
+				this.particles.push(p);
+			}
+			else
+			{
+				var pI = this.namedParticles[name];
+
+				if(!(this.particles[pI].w + 2 >= BIGDOT * 3) || name == this.specialName)
+					this.particles[pI].w += 2;
+
+				this.particles[pI].r = 0.7 * this.particles[pI].w;
+				this.particles[pI].tags = this.particles[pI].tags.concat(tags);
+			}
+		},
+
+
 		Update: function(C)
 		{
+			if (this.speed == 0)
+				return;
 			this._connected = [];
 			for(var pI1 in this.particles)
 			{
@@ -129,81 +200,72 @@ H.Physics = {
 
 					var dist = p1.dist(p2);
 
-					if (dist <= this.O.distThresh)
+					if (p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1 || dist <= this.O.distThresh * (p1.w + p2.w) / BIGDOT / 3)
 					{
-						f = true;
+						var v1 = p2.sub(p1);
 
-						var diff = p1.sub(p2);
+						var F = 1 / (dist < 10 ? 10 : dist) / 5000 * this.speed * (this.particles.length / 2000);
 
-						var F = 1 / dist / 10;
+						var a1 = p2.w / p1.w * F;
+						var vv1 = p1.v.add(v1);
+						p1.v = p1.v.add(vv1.mulNumber(a1)).mulNumber(1 - a1 * 0.6);
+						// if (p1.v.x)
 
-						var a1 = -(p2.w / p1.w) * F;
-						p1.vx += a1 * diff.x;
-						p1.vy += a1 * diff.y;
-						p1.vz += a1 * diff.z;
+						var a2 = p1.w / p2.w * F;
+						var vv2 = p2.v.sub(v1);
+						p2.v = p2.v.add(vv2.mulNumber(a2)).mulNumber(1 - a2 * 0.6);
 
-						var a2 = (p1.w / p2.w) * F;
-						p2.vx += a2 * diff.x;
-						p2.vy += a2 * diff.y;
-						p2.vz += a2 * diff.z;
-
-						// if (p1.x + p1.r >= this.O.width || p1.y + p1.r >= this.O.height ||
-						// 	p1.z + p1.r >= this.O.deep || p1.x - p1.r <= 0 ||
-						// 	p1.y - p1.r <= 0 || p1.z - p1.r <= 0)
-						// 	f = false;
-
-						if (p1.w >= 15 && p2.w >= 15)
+						if (p1.r >= BIGDOT && p2.r >= BIGDOT && (p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1))
 						{
 							this._connected.push({p1: pI1, p2: pI2, dist: dist});
 						}
 					}
 				}
-
-
-				// p1.vx -= p1.vx / 5000;
-				// p1.vy -= p1.vy / 5000;
-				// p1.vz -= p1.vz / 5000;
-
-				// if (!f)
-				// {
-				// 	var diff = p1.sub(this.O.center);
-
-				// 	var Fx = diff.x == 0 ? 0 : -(p1.w) / diff.x;
-				// 	var Fy = diff.y == 0 ? 0 : -(p1.w) / diff.y;
-				// 	var Fz = diff.z == 0 ? 0 : -(p1.w) / diff.z;
-
-				// 	p1.vx += diff.x * Fx;
-				// 	p1.vy += diff.y * Fy;
-				// 	p1.vz += diff.z * Fz;
-
-				// 	p1.x += p1.vx;
-				// 	p1.y += p1.vy;
-				// 	p1.z += p1.vz;
-
-				// }
-
 			}
 
+			// var count = 0;
 			for(var pI1 in this.particles)
 			{
 				var p1 = this.particles[pI1];
 
-				if (p1.x + p1.r > this.O.width || p1.x - p1.r < 0) p1.vx = -p1.vx;
-				if (p1.y + p1.r > this.O.height || p1.y - p1.r < 0) p1.vy = -p1.vy;
-				if (p1.z + p1.r > this.O.deep || p1.z - p1.r < 0) p1.vz = -p1.vz;
-				// if (p1.x-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
-				// if (p1.y-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy
-				// if (p1.z-p1.r < 0 && p1.vz < 0) p1.vz = -p1.vz
+				if (p1.x + p1.r + p1.v.x > this.O.width || p1.x + p1.v.x - p1.r < 0 ||
+					p1.y + p1.r + p1.v.y > this.O.height || p1.y + p1.v.y - p1.r < 0 ||
+					p1.z + p1.r + p1.v.z > this.O.deep || p1.z + p1.v.z - p1.r < 0)
+				{
+					// count++;
+					var dist = this.O.center.dist(p1);
+					var v1 = this.O.center.sub(p1);
 
-				p1.x += p1.vx;
-				p1.y += p1.vy;
-				p1.z += p1.vz;
+					var F = 1 / (dist < 10 ? 10 : dist) / 50 * this.speed;
+
+					var a1 = 1 / p1.w * F;
+					var vv1 = p1.v.add(v1);
+					p1.v = p1.v.add(vv1.mulNumber(a1)).mulNumber(1 - a1 * 0.6);
+				}
+				var l = p1.v.length();
+				if (l > this.maxParticlesSpeed)
+				{
+					p1.v = p1.v.mulNumber(0.9);
+				}
+
+
+				p1.x += p1.v.x;
+				p1.y += p1.v.y;
+				p1.z += p1.v.z;
+				// if (Math.abs(p1.v.x) > 25)
+				// 	p1.v.x -= p1.v.x / Math.abs(p1.v.x) * 0.00001;
+				// if (Math.abs(p1.v.y) > 25)
+				// 	p1.v.y -= p1.v.y / Math.abs(p1.v.y) * 0.00001;
+				// if (Math.abs(p1.v.z) > 25)
+				// 	p1.v.z -= p1.v.z / Math.abs(p1.v.z) * 0.00001;
 			}
+			// if (count != 0)
+			// console.log(count);
 		},
 
 		Render: function(C)
 		{
-			var newPoints = {};
+			this.pointsIn2DProjection = {};
 			var connectPoints = [];
 			var tMatrix = Math.float4x4.Projection(new Math.float3(0, 0, this.O.visionLimit));
 			if (this.O.transformMatrix != null)
@@ -265,31 +327,46 @@ H.Physics = {
 				var r = (1 - xpt.z / this.O.visionLimit) * this.particles[pI].r;
 				if (r > 0)
 				{
-					if (!(xpt.z in newPoints))
-						newPoints[xpt.z] = [];
-					newPoints[xpt.z].push({point: xpt, r: r, fill: this.particles[pI].fill});
+					if (!(xpt.z in this.pointsIn2DProjection))
+						this.pointsIn2DProjection[xpt.z] = [];
+					this.pointsIn2DProjection[xpt.z].push({point: xpt, index: pI, r: r});
 					connectPoints[pI] = xpt;
 				}
 			}
-			var keys = Object.keys(newPoints);
+
+			var keys = Object.keys(this.pointsIn2DProjection);
 			for (var i = keys.length - 1; i >= 0; i--)
 			{
 				var pI = keys[i];
-				for (var ppI in newPoints[pI])
+				for (var ppI in this.pointsIn2DProjection[pI])
 				{
-					var xpt = newPoints[pI][ppI];
+					var xpt = this.pointsIn2DProjection[pI][ppI];
 					var fs = C.fillStyle;
 
 					var alpha =  1 -(xpt.point.z / this.O.visionLimit);
-				//	C.fillStyle = "rgb(" + color + ", " + color + ", " + color + ")";// xpt.fill;
-					// C.fillText(color, xpt.point.x, xpt.point.y);
-					//
+
 					C.globalAlpha = alpha;
+					if (this.particles[xpt.index].name == this.specialName)
+					{
+						C.beginPath();
+						C.fillStyle = "rgba(0, 100, 0, 0.2)";
+						C.arc(xpt.point.x, xpt.point.y, xpt.r * 2, 0, Math.PI * 2);
+						// C.stroke();
+						C.fill();
+						C.fillStyle = "rgb(0, 200, 0)";
+						C.closePath();
+					}
 					C.beginPath();
 					C.arc(xpt.point.x, xpt.point.y, xpt.r, 0, Math.PI * 2);
-					C.stroke();
+					// C.stroke();
 					C.fill();
 					C.fillStyle = fs;
+
+					if(this.particles[xpt.index].r >= BIGDOT)
+					{
+						C.font = 'italic ' + Math.floor(1.5 * this.particles[xpt.index].w) + 'px Arial';
+						C.fillText(this.particles[xpt.index].name, xpt.point.x + xpt.r + 10, xpt.point.y);
+					}
 				}
 			}
 			for (var connect in this._connected)
@@ -298,20 +375,57 @@ H.Physics = {
 					p2 = connectPoints[this._connected[connect].p2];
 				if (p1 == null || p2 == null)
 					continue;
+
+				var ss = C.strokeStyle;
+				C.strokeStyle = "rgba(255, 255, 255, "+ (1.1 - this._connected[connect].dist / this.O.distThresh) +")";
 				C.beginPath();
-				C.fillStyle = 'rgba(0, 0, 0, ' + 1 + ')';
-				C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-this._connected[connect].dist/this.O.distThresh) +")";
+				C.lineWidth = 1;
 				C.moveTo(p1.x, p1.y);
 				C.lineTo(p2.x, p2.y);
+				C.lineWidth = 2;
 				C.stroke();
 				C.closePath();
-	//			var speed = 'vx: ' + pt.vx + ', vy: ' + pt.vy;
-			//	C.fillText(speed, pt.x+10, pt.y+10);
-
+				C.lineWidth = 1;
+				C.strokeStyle = ss;
 			}
 
-			delete newPoints;
-			delete connectPoints;
+			// if (this.speed == 0)
+			// {
+				var xpt = H.Physics.GravitySolver.GetSelectedPoint(this.mouseCoords.x, this.mouseCoords.y, 10);
+				var C = H.Render.ctx;
+				if (xpt != null)
+				{
+					C.beginPath();
+					C.arc(xpt.point.x, xpt.point.y, xpt.r + 10, 0, Math.PI * 2);
+					C.stroke();
+					var p1 = this.particles[xpt.index];
+					for (var i = keys.length - 1; i >= 0; i--)
+					{
+						var pI = keys[i];
+						for (var ppI in this.pointsIn2DProjection[pI])
+						{
+							var p2 = this.particles[this.pointsIn2DProjection[pI][ppI].index];
+							if (p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1)
+							{
+								var ss = C.strokeStyle;
+								C.strokeStyle = "rgba(200, 200, 200, 0.4)";
+								C.beginPath();
+								C.lineWidth = 1;
+								C.moveTo(xpt.point.x, xpt.point.y);
+								C.lineTo(this.pointsIn2DProjection[pI][ppI].point.x, this.pointsIn2DProjection[pI][ppI].point.y);
+								C.lineWidth = 2;
+								C.stroke();
+								C.closePath();
+								C.lineWidth = 1;
+								C.strokeStyle = ss;
+							}
+						}
+					}
+				}
+			// }
+
+			// delete this.pointsIn2DProjection;
+			// delete connectPoints;
 
 		}
 	}

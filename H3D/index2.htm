@@ -10,15 +10,28 @@
 	<script type="text/javascript" src="Hadouken.Physics2.js"></script>
 	<script type="text/javascript" src="gravity2.js"></script>
 
-	<!--
-	<script src="http://io.dou2.xxx:5051/socket.io/socket.io.js"></script>
+	<script src="http://serene-castle-2537.herokuapp.com/socket.io/socket.io.js"></script>
 	<script>
-	  var socket = io.connect('http://io.dou2.xxx:5051');
+	  var socket = io.connect('http://serene-castle-2537.herokuapp.com/');
 	  socket.on('tweet', function (data) {
 	    console.log(data);
+
+	    var x = Math.RandomInt(0, H.O.width);
+	    var y = Math.RandomInt(0, H.O.height);
+	    var z = Math.RandomInt(0, H.Physics.GravitySolver.O.deep);
+
+	    for(var dI in data)
+	    {
+	    	if (data[dI] != 'news')
+	    		H.Physics.GravitySolver.AddNamedPoint(data[dI],
+	    			x + Math.Random(-50, 50),
+	    			y + Math.Random(-50, 50),
+	    			z + Math.Random(-50, 50),
+	    			data);
+	    }
+
 	  });
 	</script>
--->
 </head>
 <body>
 	<p id="FPSLabel"></p>

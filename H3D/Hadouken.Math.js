@@ -44,6 +44,11 @@ H.float2 = function(x, y){
 	this.y = y;
 };
 
+H.float2.prototype.dot = function(v2)
+{
+	return this.x * v2.x + this.y * v2.y;
+}
+
 H.float2.prototype.cross = function(v2)
 {
 	return new H.float2(
@@ -53,7 +58,8 @@ H.float2.prototype.cross = function(v2)
 
 H.float2.prototype.dist = function(v2)
 {
-	return Math.sqrt(this.dot(v2));
+	var sub = this.sub(v2);
+	return Math.sqrt(sub.x * sub.x + sub.y * sub.y);
 }
 
 H.float2.prototype.sub = function(v2)
@@ -92,9 +98,43 @@ H.float3.prototype.cross = function(v2)
 	);
 }
 
+H.float3.prototype.add = function(v2)
+{
+	return new H.float3(
+		this.x + v2.x,
+		this.y + v2.y,
+		this.z + v2.z
+	);
+}
+
+H.float3.prototype.dist = function(v2)
+{
+	var sub = this.sub(v2);
+	return Math.sqrt(sub.x * sub.x + sub.y * sub.y + sub.z * sub.z);
+}
+
+
+H.float3.prototype.sub = function(v2)
+{
+	return new H.float3(
+		this.x - v2.x,
+		this.y - v2.y,
+		this.z - v2.z
+	);
+}
+
 H.float3.prototype.length = function()
 {
 	return this.dot(this);
+}
+
+H.float3.prototype.mulNumber = function(n)
+{
+	return new H.float3(
+		this.x * n,
+		this.y * n,
+		this.z * n
+	)
 }
 
 H.float3.prototype.norm = function()
@@ -102,10 +142,74 @@ H.float3.prototype.norm = function()
 	return new H.float3();
 }
 
-H.float4x4 = function()
+H.float4x4 = function(m)
 {
-	this._ = [];
+	this._ = m == null ? [] : m;
 }
+
+H.float4x4.Translate = function(offsetP)
+{
+	return new H.float4x4([
+		[1, 0, 0, offsetP.x],
+		[0, 1, 0, offsetP.y],
+		[0, 0, 1, offsetP.z],
+		[0, 0, 0, 1],
+	]);
+}
+
+H.float4x4.Projection = function(pt3d)
+{
+	var f = function(x) {return x == 0 ? 0 : 1 / x;}
+	return new H.float4x4([
+		[1, 0, 0, 0],
+		[0, 1, 0, 0],
+		[0, 0, 1, 0],
+		[f(pt3d.x), f(pt3d.z), f(pt3d.z), 1]
+	]);
+}
+
+H.float4x4.prototype.mulFloat3 = function(pt3d)
+{
+	var m1 = this;
+
+	var RDC = function(i)
+	{
+		return m1._[i][0] * pt3d.x + m1._[i][1] * pt3d.y + m1._[i][2] * pt3d.z + m1._[i][3] * 1;
+	};
+
+	var d = RDC(3);
+
+	return new H.float3(RDC(0) / d, RDC(1) / d, RDC(2) / d);
+}
+
+H.float4x4.RotateX = function(angle)
+{
+    return new H.float4x4([
+    	[1, 0, 0, 0],
+    	[0, Math.cos(angle), -Math.sin(angle), 0],
+    	[0, Math.sin(angle), Math.cos(angle), 0],
+    	[0, 0, 0, 1]
+	]);
+}
+H.float4x4.RotateY = function(angle)
+{
+    return new H.float4x4([
+    	[Math.cos(angle), 0, -Math.sin(angle), 0],
+    	[0, 1, 0, 0],
+    	[Math.sin(angle), 0, Math.cos(angle), 0],
+    	[0, 0, 0, 1]
+	]);
+}
+H.float4x4.RotateZ = function(angle)
+{
+    return new H.float4x4([
+    	[Math.cos(angle), -Math.sin(angle), 0, 0],
+    	[Math.sin(angle), Math.cos(angle), 0, 0],
+    	[0, 0, 1, 0],
+    	[0, 0, 0, 1]
+	]);
+}
+
 
 H.float4x4.prototype.mul = function(m2)
 {
