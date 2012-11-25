@@ -6,8 +6,8 @@ H.Physics = {
 		Init: function(opts)
 		{
 			this.O = $.extend({}, {
-				numParticles: 500,
-				distThresh: 50,
+				numParticles: 800,
+				distThresh: 80,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
@@ -17,13 +17,36 @@ H.Physics = {
 			}, opts);
 		},
 
-		
+		Generate: function()
+		{
+			for (var c = 0; c < this.O.numParticles; c++)
+			{
+				var w = Math.Random(4, 6);
+				
+				if(Math.RandomInt(0, 100) > 97)
+					w = Math.Random(10, 14);
+
+				var x = Math.RandomInt(0, this.O.width);
+				var y = Math.RandomInt(0, this.O.height);
+
+				this.particles.push({
+					x: x,
+					y: y,
+					r: 0.6 * w,
+					w: w,
+					vx: 0,
+					vy: 0
+				});
+			}
+		},
+
+		/*
 		Generate: function()
 		{
 			var x = 0;
 			var y = 0;
 
-			var step = 32;
+			var step = 20;
 
 			for (var c = 0; c < this.O.numParticles; c++)
 			{
@@ -51,7 +74,7 @@ H.Physics = {
 				});
 			}
 		},
-		
+		*/
 
 		FGenerate: function()
 		{
@@ -103,46 +126,57 @@ H.Physics = {
 			for(var pI1 in this.particles)
 			{
 				var p1 = this.particles[pI1];
+				var pI2 = parseInt(pI1) + 1;
+				var pI2End = this.particles.length
+				if (pI2 >= this.particles.length)
+				{
+					pI2 = 0;
+					pI2End = 0;
+				}
 
-				if (p1.x+p1.r > this.O.width && p1.vx > 0) p1.vx = -p1.vx;
-				if (p1.y+p1.r > this.O.height && p1.vy > 0) p1.vy = -p1.vy;
-				if (p1.x-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
-				if (p1.y-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy
-
-				for(var pI2 = parseInt(pI1) + 1; pI2 < this.particles.length; pI2++)
+				for( ; pI2 < pI2End; pI2++)
 				{
 					var p2 = this.particles[pI2];
 					
 					var dx = p1.x - p2.x;
 					var dy = p1.y - p2.y;
 					var dist = Math.sqrt(dx*dx + dy*dy);
-					var distSqrd = dx*dx + dy*dy;
 
 					if(dist <= this.O.distThresh)
 					{
-						var F = -(p1.w + p2.w) / distSqrd;
+						var ax = dx / 9000;
+						var ay = dy / 9000;
 
-						p1.vx = dx * F;
-						p1.vy = dy * F;
+						p1.vx -= ax;
+						p1.vy -= ay;
+						p2.vx += ax;
+						p2.vy += ay;
 
-						p2.vx = (p2.x - p1.x) * F;
-						p2.vy = (p2.y - p1.y) * F;
+						if (p1.x+p1.vx+p1.r > this.O.width && p1.vx > 0) p1.vx = -p1.vx;
+						if (p1.y+p1.vy+p1.r > this.O.height && p1.vy > 0) p1.vy = -p1.vy;
+						if (p1.x+p1.vx-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
+						if (p1.y+p1.vy-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy;
 
-						p1.x += p1.vx;
-						p1.y += p1.vy;
+						p1.x += p1.vx * p2.w / 150;
+						p1.y += p1.vy * p2.w / 150;
+						p2.x += p2.vx * p1.w / 150;
+						p2.y += p2.vy * p1.w / 150;
+											
+					}
 
-						p2.x += p2.vx;
-						p2.y += p2.vy;
+					
 
-						if (p1.w >= 3 && p2.w >= 3)
-						{
-							C.beginPath();
-							C.strokeStyle = "rgba(0, 0, 0, "+ (1.1-dist/this.O.distThresh) +")";
-							C.moveTo(p1.x, p1.y);
-							C.lineTo(p2.x, p2.y);
-							C.stroke();
-							C.closePath();
-						}
+				//	p2.x += p2.vx / 10;
+				//	p2.y += p2.vy / 10;
+
+					if (p1.w >= 10 && p2.w >= 10)
+					{
+						C.beginPath();
+						C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
+						C.moveTo(p1.x, p1.y);
+						C.lineTo(p2.x, p2.y);
+						C.stroke();
+						C.closePath();
 					}
 				}
 			}
@@ -155,7 +189,7 @@ H.Physics = {
 			for(var pI in this.particles)
 			{
 
-				C.fillStyle = 'rgba(0, 0, 0, ' + 1 + ')';
+				C.fillStyle = 'rgba(255, 255, 255, ' + 1 + ')';
 				C.beginPath();
 
 				var pt = this.particles[pI];
@@ -165,7 +199,7 @@ H.Physics = {
 				C.fill();
 				C.closePath();
 
-				var speed = 'vx: ' + pt.vx + ', vy: ' + pt.vy;
+			//	var speed = 'dx: ' + pt.dx + "\nff: " + pt.ff;
 			//	C.fillText(speed, pt.x+10, pt.y+10);
 
 			}

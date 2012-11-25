@@ -15,7 +15,7 @@ H.Math.Perspective = function(fov, aspect, zn, zf)
 
 H.Math.Radian2Degree = function(x)
 {
-	return x * (Math.PI / 180);
+	return x / (Math.PI * 180);
 }
 
 H.Math.Degree2Radian = function(x)

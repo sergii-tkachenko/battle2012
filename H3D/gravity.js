@@ -30,8 +30,8 @@ H.Ready(function(){
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
 		gradient.addColorStop(0, "#080c24");
 		gradient.addColorStop(1, "#d00206");
-	//	R.Clear(gradient);
-		R.Clear("white");
+		R.Clear(gradient);
+	//	R.Clear("white");
 	//	R.Clear('#71C9F5');
 		C.globalAlpha = 1;
 
