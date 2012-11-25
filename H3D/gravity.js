@@ -14,7 +14,7 @@ H.Ready(function(){
 	this.R.Clear('#71C9F5');
 
 	H.Physics.GravitySolver.Init({width:w, height:h});
-	H.Physics.GravitySolver.Generate();
+//	H.Physics.GravitySolver.Generate();
 
 	var frameCounter = 0;
 	var frameTime = 0;
@@ -25,7 +25,7 @@ H.Ready(function(){
 	var RenderFrame = function()
 	{	
 		frameDate = new Date().getTime();
-		C.globalAlpha = 0.5;
+		C.globalAlpha = 0.75;
 		//	Frame clearing code
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
 		gradient.addColorStop(0, "#080c24");
@@ -55,13 +55,17 @@ H.Ready(function(){
 		setTimeout(RenderFrame, 1);
 	}
 
-	var FPSPrecision = 100;
+	var FPSPrecision = 300;
 	var $FPSLabel = document.getElementById('FPSLabel');
+	var $PointCounter = document.getElementById('PointCounter');
 
+	
 	setInterval(function(){
-		$FPSLabel.innerHTML = (FPSPrecision / frameTime).toFixed(3) + ' fps';
+		$FPSLabel.innerHTML = (1000 / frameTime * 1000 / FPSPrecision).toFixed(3) + ' fps';
+		$PointCounter.innerHTML = H.Physics.GravitySolver.particles.length + ' points';
 		frameCounter = 0;
 	}, FPSPrecision);
+
 
 	R.Clear('#774040');
 

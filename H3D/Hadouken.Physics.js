@@ -1,3 +1,5 @@
+var BIGDOT = 6;
+
 H.Physics = {
 	GravitySolver: {
 
@@ -6,8 +8,8 @@ H.Physics = {
 		Init: function(opts)
 		{
 			this.O = $.extend({}, {
-				numParticles: 800,
-				distThresh: 80,
+				numParticles: 600,
+				distThresh: 420,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
@@ -24,57 +26,23 @@ H.Physics = {
 				var w = Math.Random(4, 6);
 				
 				if(Math.RandomInt(0, 100) > 97)
-					w = Math.Random(10, 14);
+					w = Math.Random(13, 16);
 
 				var x = Math.RandomInt(0, this.O.width);
 				var y = Math.RandomInt(0, this.O.height);
 
-				this.particles.push({
-					x: x,
-					y: y,
-					r: 0.6 * w,
-					w: w,
-					vx: 0,
-					vy: 0
-				});
-			}
-		},
-
-		/*
-		Generate: function()
-		{
-			var x = 0;
-			var y = 0;
-
-			var step = 20;
-
-			for (var c = 0; c < this.O.numParticles; c++)
-			{
-				var w = Math.Random(4, 8);
-				
-				if(Math.RandomInt(0, 100) > 70)
-					w = Math.Random(15, 17);
-
-				x += step;
-				if (x > this.O.width)
-				{
-					y += step;
-					if (y > this.O.height) y = 0;
-
-					x = 0;
-				}
+				var sign = Math.RandomInt(0, 100) > 500 ? 1 : -1
 
 				this.particles.push({
 					x: x,
 					y: y,
 					r: 0.3 * w,
 					w: w,
-					vx: 0,
-					vy: 0
+					vx: 0,//Math.Random(-0.5, 0.5) * w / 10,
+					vy: 0//Math.Random(-0.5, 0.5) * w / 10
 				});
 			}
 		},
-		*/
 
 		FGenerate: function()
 		{
@@ -114,11 +82,46 @@ H.Physics = {
 			this.particles.push({
 				x: x,
 				y: y,
-				r: 5,
-				w: 5,
+				r: 10,
+				w: 10,
 				vx: 0,
-				vy: 0
+				vy: 0,
+				name: '',
+				tags: []
 			});
+		},
+
+		namedParticles: [],
+
+		AddNamedPoint: function(name, x, y, tags)
+		{
+			var id = this.particles.length;
+
+			if (!this.namedParticles[name])
+			{
+				this.namedParticles[name] = id;
+
+				this.particles.push({
+					x: x,
+					y: y,
+					r: 2,
+					w: 2,
+					vx: Math.Random(-0.5, 0.5),
+					vy: Math.Random(-0.5, 0.5),
+					name: name,
+					tags: tags
+				});
+			}
+			else
+			{
+				var pI = this.namedParticles[name];
+				
+				if(!(this.particles[pI].w+2 >= BIGDOT * 3))
+					this.particles[pI].w += 2;
+
+				this.particles[pI].r = 0.7 * this.particles[pI].w;
+				this.particles[pI].tags = this.particles[pI].tags.concat(tags);
+			}
 		},
 
 		Update: function(C)
@@ -142,43 +145,68 @@ H.Physics = {
 					var dy = p1.y - p2.y;
 					var dist = Math.sqrt(dx*dx + dy*dy);
 
-					if(dist <= this.O.distThresh)
+					if(/*dist <= this.O.distThresh && */(p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1))
 					{
-						var ax = dx / 9000;
-						var ay = dy / 9000;
+						var ax = dx / 5000;
+						var ay = dy / 5000;
 
-						p1.vx -= ax;
-						p1.vy -= ay;
-						p2.vx += ax;
-						p2.vy += ay;
+						p1.vx -= ax * p2.w / 150;
+						p1.vy -= ay * p2.w / 150;
+						p2.vx += ax * p1.w / 150;
+						p2.vy += ay * p2.w / 150;
 
 						if (p1.x+p1.vx+p1.r > this.O.width && p1.vx > 0) p1.vx = -p1.vx;
 						if (p1.y+p1.vy+p1.r > this.O.height && p1.vy > 0) p1.vy = -p1.vy;
 						if (p1.x+p1.vx-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
 						if (p1.y+p1.vy-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy;
 
-						p1.x += p1.vx * p2.w / 150;
-						p1.y += p1.vy * p2.w / 150;
-						p2.x += p2.vx * p1.w / 150;
-						p2.y += p2.vy * p1.w / 150;
+						
+						if (p1.vx > 0) p1.vx = Math.min(p1.vx, 0.4);
+						else	p1.vx = Math.max(p1.vx, -0.4)
+
+						if (p1.vy > 0) p1.vy = Math.min(p1.vy, 0.4);
+						else	p1.vy = Math.max(p1.vy, -0.4)
+
+						if (p2.vx > 0) p2.vx = Math.min(p2.vx, 0.4);
+						else	p2.vx = Math.max(p2.vx, -0.4)
+
+						if (p2.vy > 0) p2.vy = Math.min(p2.vy, 0.4);
+						else	p2.vy = Math.max(p2.vy, -0.4)
+						
+
+						p1.x += p1.vx;
+						p1.y += p1.vy;
+						p2.x += p2.vx;
+						p2.y += p2.vy;
+
+						
 											
 					}
 
 					
-
+					
 				//	p2.x += p2.vx / 10;
 				//	p2.y += p2.vy / 10;
 
-					if (p1.w >= 10 && p2.w >= 10)
+					if (p1.r >= BIGDOT && p2.r >= BIGDOT && (p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1))
 					{
 						C.beginPath();
 						C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
+						C.lineWidth = 1;
 						C.moveTo(p1.x, p1.y);
 						C.lineTo(p2.x, p2.y);
 						C.stroke();
 						C.closePath();
 					}
 				}
+
+				/*var deccelerate = 0.0001;
+				if(p1.vx > 0) p1.vx = Math.max(p1.vx - deccelerate, 0);
+				else p1.vx = Math.min(p1.vx + deccelerate, 0);
+
+				if(p1.vy > 0) p1.vy = Math.max(p1.vy - deccelerate, 0);
+				else p1.vy = Math.min(p1.vy + deccelerate, 0);
+				*/
 			}
 		},
 
@@ -191,6 +219,7 @@ H.Physics = {
 
 				C.fillStyle = 'rgba(255, 255, 255, ' + 1 + ')';
 				C.beginPath();
+				C.strokeStyle = 'none';
 
 				var pt = this.particles[pI];
 				C.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
@@ -200,7 +229,12 @@ H.Physics = {
 				C.closePath();
 
 			//	var speed = 'dx: ' + pt.dx + "\nff: " + pt.ff;
-			//	C.fillText(speed, pt.x+10, pt.y+10);
+
+				if(pt.r >= BIGDOT)
+				{
+					C.font = 'italic ' + Math.floor(1.5 * pt.w) + 'px Arial';
+					C.fillText(pt.name, pt.x + pt.r + 10, pt.y);
+				}
 
 			}
 

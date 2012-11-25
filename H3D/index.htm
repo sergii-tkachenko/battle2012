@@ -10,18 +10,30 @@
 	<script type="text/javascript" src="Hadouken.Physics.js"></script>
 	<script type="text/javascript" src="gravity.js"></script>
 
-	<!--
 	<script src="http://io.dou2.xxx:5051/socket.io/socket.io.js"></script>
 	<script>
 	  var socket = io.connect('http://io.dou2.xxx:5051');
 	  socket.on('tweet', function (data) {
 	    console.log(data);
+
+	    var x = Math.RandomInt(0, H.O.width);
+	    var y = Math.RandomInt(0, H.O.height);
+
+	    for(var dI in data)
+	    {
+	    	if (data[dI] != 'news')
+	    		H.Physics.GravitySolver.AddNamedPoint(data[dI],
+	    			x + Math.Random(-50, 50),
+	    			y + Math.Random(-50, 50),
+	    			data);
+	    }
 	  });
 	</script>
--->
+
 </head>
 <body>
-	<p id="FPSLabel"></p>
 	<div id="hadouken"></div>
+	<p id="FPSLabel"></p>
+	<p id="PointCounter"></p>
 </body>
 </html>
