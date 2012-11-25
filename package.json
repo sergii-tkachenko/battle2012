@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "socket.io": "0.9.11",
-    "twit": "1.0.7"
+    "twit": "1.0.7",
+    "express": "2.5.x"
   },
   "engines": {
     "node": "0.8.x",

@@ -1,9 +1,15 @@
+express = require('express')
+app = express.createServer();
 port = process.env.PORT || 3000;
-io = require('socket.io').listen(port)
+
+
+io = require('socket.io').listen(app)
 io.configure ->
   io.set "transports", ["xhr-polling"]
   io.set "polling duration", 10
 io.set 'log level', 2
+
+app.listen(port);
 
 Twit = require('twit')
 T = new Twit {
