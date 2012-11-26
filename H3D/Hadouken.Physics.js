@@ -11,7 +11,7 @@ H.Physics = {
 		{
 			this.O = $.extend({}, {
 				numParticles: 600,
-				distThresh: 420,
+				distThresh: 300,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
@@ -279,10 +279,10 @@ H.Physics = {
 					pI2End = 0;
 				}
 
-				if(p1.vx == 0 || p1.vy == 0 || (new Date().getTime() - p1.time) > 120*1000)
+				if(p1.vx == 0 || p1.vy == 0)
 				{
-				//	delUS.push(pI1);
-				//	continue;
+					delUS.push(pI1);
+					continue;
 				}
 
 				for( ; pI2 < pI2End; pI2++)
@@ -332,7 +332,7 @@ H.Physics = {
 				//	p2.y += p2.vy / 10;
 
 				//	if (p1.r >= BIGDOT && p2.r >= BIGDOT && (p1.tags.indexOf(p2.name) != -1 || p2.tags.indexOf(p1.name) != -1))
-					if (p1.r >= BIGDOT && p2.r >= BIGDOT && (p1.tags[p2.name] === true || p2.tags[p1.name] === true))
+					if (p1.r >= BIGDOT && p2.r >= BIGDOT && ((p1.tags[p2.name] === true || p2.tags[p1.name] === true) || (dist <= this.O.distThresh && H.Demo.Options.dynamicLinks)))
 					{
 						/*
 						var path = this.FindPathVertices(pI1);
@@ -372,7 +372,7 @@ H.Physics = {
 
 			for(var dI in delUS)
 			{
-				this.particles = this.particles.splice(delUS[dI]);
+				this.particles = this.particles.splice(delUS[dI], 1);
 			}
 		},
 

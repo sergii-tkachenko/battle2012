@@ -18,6 +18,12 @@ H.TwitPanel = {
 	}
 };
 
+H.Demo = {
+	Options: {
+		dynamicLinks: window.location.hash == "#dynamic"
+	}
+};
+
 H.Ready(function(){
 	
 	var self = this;

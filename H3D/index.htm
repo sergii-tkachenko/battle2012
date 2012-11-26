@@ -68,6 +68,10 @@
 	<script>
 	  var socket = io.connect('http://serene-castle-2537.herokuapp.com');
 	  socket.on('tweet', function (data) {
+
+	  	if(data.length == 2)
+	  		return;
+	  	
 	    console.log(data);
 
 	    var x = Math.RandomInt(0, H.O.width);
