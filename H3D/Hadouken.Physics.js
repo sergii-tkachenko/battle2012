@@ -93,7 +93,7 @@ H.Physics = {
 			});
 		},
 
-		namedParticles: [],
+		namedParticles: {},
 
 		AddNamedPoint: function(name, x, y, tags)
 		{
@@ -203,7 +203,7 @@ H.Physics = {
 			return result;
 		},
 
-		RenderHoverPoint: function(pt, C)
+		RenderHoverPoint: function(pt, C, renderedTags)
 		{
 			var ss = C.strokeStyle;
 			var fs = C.fillStyle;
@@ -217,6 +217,12 @@ H.Physics = {
 			C.stroke();
 			C.closePath();
 
+			C.globalAlpha = 1;
+			C.font = 'normal 14px Arial';
+			C.fillText(pt.name, pt.x + pt.r + 10, pt.y);
+
+			renderedTags.push(pt.name);
+
 			for(var tI in pt.tags)
 			{
 				var pI = this.namedParticles[tI];
@@ -225,15 +231,31 @@ H.Physics = {
 				if (typeof p2 == 'undefined')
 					continue;
 
+				if(renderedTags.indexOf(p2.name) >= 0)
+					continue;
+
 				C.beginPath();
-				
 				C.moveTo(pt.x, pt.y);
 				C.lineTo(p2.x, p2.y);
 				C.stroke();
 				C.closePath();
-
 				C.font = 'normal 10px Arial';
 				C.fillText(p2.name, p2.x + p2.r + 10, p2.y);
+
+			//	this.RenderHoverPoint(p2, C, renderedTags);
+			}
+
+			for(var tI in pt.tags)
+			{
+				var pI = this.namedParticles[tI];
+				var p2 = this.particles[pI];
+
+				if (typeof p2 == 'undefined')
+					continue;
+
+				renderedTags.push(p2.name);
+
+				this.RenderPointDirectLinks(p2, C, true, true, renderedTags);
 			}
 			
 			C.strokeStyle = ss;
@@ -324,7 +346,7 @@ H.Physics = {
 						*/
 
 						C.beginPath();
-						C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist/this.O.distThresh) +")";
+						C.strokeStyle = "rgba(255, 255, 255, "+ (1.1-dist / this.O.distThresh * 1.7) +")";
 						C.lineWidth = 1;
 
 						if (p1.r >= BIGDOT*2 || p2.r >= BIGDOT*2)
@@ -334,6 +356,8 @@ H.Physics = {
 						C.lineTo(p2.x, p2.y);
 						C.stroke();
 						C.closePath();
+
+					//	this.RenderPointDirectLinks(p2, C, true);
 					}
 				}
 
@@ -350,6 +374,47 @@ H.Physics = {
 			{
 				this.particles = this.particles.splice(delUS[dI]);
 			}
+		},
+
+		RenderPointDirectLinks: function(pt, C, showNames, recursive, renderedTags)
+		{
+			var ss = C.strokeStyle;
+			var fs = C.fillStyle;
+
+			C.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+			C.fillStyle = 'rgba(255, 255, 255, 0.3)';
+			C.lineWidth = 1;
+
+			for(var tI in pt.tags)
+			{
+				var pI = this.namedParticles[tI];
+				var p2 = this.particles[pI];
+
+				if (typeof p2 == 'undefined')
+					continue;
+
+				if(renderedTags.indexOf(p2.name) >= 0)
+					continue;
+
+				C.beginPath();
+				
+				C.moveTo(pt.x, pt.y);
+				C.lineTo(p2.x, p2.y);
+				C.stroke();
+				C.closePath();
+
+				if(showNames)
+				{
+					C.font = 'normal 10px Arial';
+					C.fillText(p2.name, p2.x + p2.r + 10, p2.y);
+				}
+
+				renderedTags.push(p2.name);
+				this.RenderPointDirectLinks(p2, C, showNames, recursive, renderedTags);
+			}
+
+			C.strokeStyle = ss;
+			C.fillStyle = fs;
 		},
 
 		Render: function(C)
@@ -376,8 +441,9 @@ H.Physics = {
 				{
 					C.font = 'italic ' + Math.floor(1.5 * pt.w) + 'px Arial';
 					C.fillText(pt.name, pt.x + pt.r + 10, pt.y);
-				}
 
+				//	this.RenderPointDirectLinks(pt, C, false);
+				}
 			}
 
 			C.fillStyle = fs;

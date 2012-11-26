@@ -86,13 +86,13 @@ H.Ready(function(){
 
 		hoverPoints = GS.FindPointsUnderCursor(e.offsetX, e.offsetY);
 			for(var pI in hoverPoints)
-				GS.RenderHoverPoint(hoverPoints[pI], C);
+				GS.RenderHoverPoint(hoverPoints[pI], C, []);
 	}
 
 	var RenderFrame = function()
 	{	
 		frameDate = new Date().getTime();
-		C.globalAlpha = pause ? 0.1 : 0.5;
+		C.globalAlpha = pause ? 0.1 : 0.4;
 		//	Frame clearing code
 		var gradient = C.createLinearGradient(0, H.O.height, H.O.width, 0);
 		gradient.addColorStop(0, "#0b0d24");
