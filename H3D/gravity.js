@@ -21,7 +21,7 @@ H.TwitPanel = {
 H.Demo = {
 	Options: {
 		dynamicLinks: window.location.hash == "#dynamic",
-		speedLimit: 0.1
+		speedLimit: 0.2
 	}
 };
 
