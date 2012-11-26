@@ -1,4 +1,4 @@
-var BIGDOT = 4;
+var BIGDOT = 3;
 var SELECTRADIUS = 20;
 
 H.Physics = {
@@ -110,7 +110,7 @@ H.Physics = {
 				this.particles.push({
 					x: x,
 					y: y,
-					r: 2,
+					r: 1,
 					w: 2,
 					vx: Math.Random(-0.5, 0.5),
 					vy: Math.Random(-0.5, 0.5),
@@ -126,8 +126,8 @@ H.Physics = {
 				if(typeof this.particles[pI] == 'undefined')
 					return;
 				
-				if(!(this.particles[pI].w + 2 >= BIGDOT * 4))
-					this.particles[pI].w += 3;
+				if(!(this.particles[pI].w + 1 >= BIGDOT * 4))
+					this.particles[pI].w += 1;
 
 				this.particles[pI].r = 0.7 * this.particles[pI].w;
 				this.particles[pI].time = new Date().getTime();
