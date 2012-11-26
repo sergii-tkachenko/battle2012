@@ -11,7 +11,7 @@ H.Physics = {
 		{
 			this.O = $.extend({}, {
 				numParticles: 600,
-				distThresh: 300,
+				distThresh: 150,
 				gen: {
 					weightBounds: [0.5, 4]
 				},
