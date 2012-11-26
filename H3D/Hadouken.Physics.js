@@ -307,19 +307,19 @@ H.Physics = {
 						if (p1.y+p1.vy+p1.r > this.O.height && p1.vy > 0) p1.vy = -p1.vy;
 						if (p1.x+p1.vx-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
 						if (p1.y+p1.vy-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy;
-						
-						if (p1.vx > 0) p1.vx = Math.min(p1.vx, 0.4);
-						else	p1.vx = Math.max(p1.vx, -0.4)
 
-						if (p1.vy > 0) p1.vy = Math.min(p1.vy, 0.4);
-						else	p1.vy = Math.max(p1.vy, -0.4)
+						if (p1.vx > H.Demo.Options.speedLimit) p1.vx = H.Demo.Options.speedLimit;
+						else if (p1.vx < -H.Demo.Options.speedLimit) p1.vx = -H.Demo.Options.speedLimit;
 
-						if (p2.vx > 0) p2.vx = Math.min(p2.vx, 0.4);
-						else	p2.vx = Math.max(p2.vx, -0.4)
+						if (p1.vy > H.Demo.Options.speedLimit) p1.vy = H.Demo.Options.speedLimit;
+						else if (p1.vy < -H.Demo.Options.speedLimit) p1.vy = -H.Demo.Options.speedLimit;
 
-						if (p2.vy > 0) p2.vy = Math.min(p2.vy, 0.4);
-						else	p2.vy = Math.max(p2.vy, -0.4)
-						
+						if (p2.vx > H.Demo.Options.speedLimit) p2.vx = H.Demo.Options.speedLimit;
+						else if (p2.vx < -H.Demo.Options.speedLimit) p2.vx = -H.Demo.Options.speedLimit;
+
+						if (p2.vy > H.Demo.Options.speedLimit) p2.vy = H.Demo.Options.speedLimit;
+						else if (p2.vy < -H.Demo.Options.speedLimit) p2.vy = -H.Demo.Options.speedLimit;
+				
 						p1.x += p1.vx;
 						p1.y += p1.vy;
 						p2.x += p2.vx;
