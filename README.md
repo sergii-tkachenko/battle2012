@@ -3,6 +3,5 @@ battle2012
 
 Проекты ДОУ Хакатона final battle.
 
-Для регистрации проекта в DEMO необходимо сделать форк этого репозитория.
-
-Все просто: форкаете этот репозиторий, пишите код, делаете commit. 
+Двумерное демо: serene-castle-2537.herokuapp.com/H3D/index.htm#dynamic
+Трёхмерное демо: serene-castle-2537.herokuapp.com/H3D/index2.htm
