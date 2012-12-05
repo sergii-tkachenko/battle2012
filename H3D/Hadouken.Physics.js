@@ -262,6 +262,14 @@ H.Physics = {
 			C.fillStyle = fs;
 		},
 
+		BorderCollision: function(pt)
+		{
+			if (pt.x+pt.vx+pt.r > this.O.width && pt.vx > 0) pt.vx = -pt.vx;
+			if (pt.y+pt.vy+pt.r > this.O.height && pt.vy > 0) pt.vy = -pt.vy;
+			if (pt.x+pt.vx-pt.r < 0 && pt.vx < 0) pt.vx = -pt.vx;
+			if (pt.y+pt.vy-pt.r < 0 && pt.vy < 0) pt.vy = -pt.vy;
+		},
+
 		Update: function(C)
 		{
 			this.paths = [];
@@ -303,11 +311,9 @@ H.Physics = {
 						p2.vx += ax * p1.w / 150;
 						p2.vy += ay * p2.w / 150;
 
-						if (p1.x+p1.vx+p1.r > this.O.width && p1.vx > 0) p1.vx = -p1.vx;
-						if (p1.y+p1.vy+p1.r > this.O.height && p1.vy > 0) p1.vy = -p1.vy;
-						if (p1.x+p1.vx-p1.r < 0 && p1.vx < 0) p1.vx = -p1.vx;
-						if (p1.y+p1.vy-p1.r < 0 && p1.vy < 0) p1.vy = -p1.vy;
-
+						this.BorderCollision(p1);
+						this.BorderCollision(p2);
+						
 						if (p1.vx > H.Demo.Options.speedLimit) p1.vx = H.Demo.Options.speedLimit;
 						else if (p1.vx < -H.Demo.Options.speedLimit) p1.vx = -H.Demo.Options.speedLimit;
 
